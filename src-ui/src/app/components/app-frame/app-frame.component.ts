@@ -9,6 +9,8 @@ import {
   DjangoMessagesService,
 } from 'src/app/services/django-messages.service'
 import { SavedViewService } from 'src/app/services/rest/saved-view.service'
+import { StoragePath } from 'src/app/data/storage-path'
+import { StoragePathService } from 'src/app/services/rest/storage-path.service'
 import { environment } from 'src/environments/environment'
 import { DocumentDetailComponent } from '../document-detail/document-detail.component'
 import {
@@ -53,11 +55,14 @@ export class AppFrameComponent
 
   slimSidebarAnimating: boolean = false
 
+  storagePaths: StoragePath[] = []
+
   constructor(
     public router: Router,
     private activatedRoute: ActivatedRoute,
     private openDocumentsService: OpenDocumentsService,
     public savedViewService: SavedViewService,
+    private storagePathService: StoragePathService,
     private remoteVersionService: RemoteVersionService,
     public settingsService: SettingsService,
     public tasksService: TasksService,
@@ -75,6 +80,17 @@ export class AppFrameComponent
       )
     ) {
       this.savedViewService.initialize()
+    }
+
+    if (
+      permissionsService.currentUserCan(
+        PermissionAction.View,
+        PermissionType.StoragePath
+      )
+    ) {
+      this.storagePathService
+        .listAll()
+        .subscribe((result) => (this.storagePaths = result.results))
     }
   }
 
