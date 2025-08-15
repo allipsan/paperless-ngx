@@ -38,6 +38,7 @@ import { ProfileEditDialogComponent } from '../common/profile-edit-dialog/profil
 import { NgxBootstrapIconsModule, allIcons } from 'ngx-bootstrap-icons'
 import { GlobalSearchComponent } from './global-search/global-search.component'
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http'
+import { StoragePathService } from 'src/app/services/rest/storage-path.service'
 
 const saved_views = [
   {
@@ -124,6 +125,10 @@ describe('AppFrameComponent', () => {
               }),
             sidebarViews: saved_views.filter((v) => v.show_in_sidebar),
           },
+        },
+        {
+          provide: StoragePathService,
+          useValue: { listAll: () => of({ results: [] }) },
         },
         PermissionsService,
         RemoteVersionService,
